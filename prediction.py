@@ -1,7 +1,3 @@
-dir_data = "dataset2/"
-dir_seg = dir_data + "/annotations_prepped_train/"
-dir_img = dir_data + "/images_prepped_train/"
-
 import cv2, os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,7 +8,9 @@ from sklearn.utils import shuffle
 ## seaborn has white grid by default so I will get rid of this.
 sns.set_style("whitegrid", {'axes.grid' : False})
 
-
+dir_data = "dataset2/"
+dir_seg = dir_data + "/annotations_prepped_train/"
+dir_img = dir_data + "/images_prepped_train/"
 ldseg = np.array(os.listdir(dir_seg))
 ## pick the first image file
 fnm = ldseg[0]
