@@ -1,4 +1,4 @@
-﻿dir_data = "dataset2/"
+dir_data = "dataset2/"
 dir_seg = dir_data + "/annotations_prepped_train/"
 dir_img = dir_data + "/images_prepped_train/"
 
@@ -6,6 +6,9 @@ import cv2, os
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from keras.models import load_model
+import random
+from sklearn.utils import shuffle
 ## seaborn has white grid by default so I will get rid of this.
 sns.set_style("whitegrid", {'axes.grid' : False})
 
@@ -23,9 +26,6 @@ print("seg.shape={}, img_is.shape={}".format(seg.shape,img_is.shape))
 ## Check the number of labels
 
 n_classes = 3
-
-
-import random
 def give_color_to_seg_img(seg,n_classes):
     '''
     seg : (input_width,input_height,3)
@@ -56,8 +56,6 @@ for fnm in ldseg[np.random.choice(len(ldseg),3,replace=False)]:
     seg_img = give_color_to_seg_img(seg,n_classes)
 
 
-
-
 def getImageArr( path , width , height ):
         img = cv2.imread(path, 1)
         img = np.float32(cv2.resize(img, ( width , height ))) / 127.5 - 1
@@ -76,8 +74,6 @@ def getSegmentationArr( path , nClasses ,  width , height  ):
     return seg_labels
 
 
-
-
 images = os.listdir(dir_img)
 images.sort()
 segmentations  = os.listdir(dir_seg)
@@ -91,12 +87,6 @@ for im , seg in zip(images,segmentations) :
 
 X, Y = np.array(X) , np.array(Y)
 
-
-
-
-
-
-from sklearn.utils import shuffle
 train_rate = 0.85
 index_train = np.random.choice(X.shape[0],int(X.shape[0]*train_rate),replace=False)
 index_test  = list(set(range(X.shape[0])) - set(index_train))
@@ -105,8 +95,6 @@ X, Y = shuffle(X,Y)
 X_train, y_train = X[index_train],Y[index_train]
 X_test, y_test = X[index_test],Y[index_test]
 
-
-from keras.models import load_model
 model = load_model('Mon_modele2.h5')
 
 model.compile(loss='binary_crossentropy',
@@ -119,13 +107,9 @@ y_predi = np.argmax(y_pred, axis=3)
 y_testi = np.argmax(y_test, axis=3)
 
 
-
-
-
 def IoU(Yi,y_predi):
     ## mean Intersection over Union
     ## Mean IoU = TP/(FN + TP + FP)
-
     IoUs = []
     Nclass = int(np.max(Yi)) + 1
     for c in range(Nclass):
@@ -140,12 +124,6 @@ def IoU(Yi,y_predi):
     print("Mean IoU: {:4.3f}".format(mIoU))
     
 IoU(y_testi,y_predi)
-
-
-
-
-
-
 
 shape = (224,224)
 n_classes= 3
